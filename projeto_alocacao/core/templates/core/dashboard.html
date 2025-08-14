@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <meta http-equiv="refresh" content="120">
+
+    <h1>{{ titulo }}</h1>
+
+    {% for alocacao in alocacoes %}
+        
+        {% ifchanged alocacao.plataforma %}
+            
+            {% if not forloop.first %}
+                </div> </div> {% endif %}
+
+            <div class="platform-group">
+                <h2 class="platform-title">{{ alocacao.plataforma.nome }}</h2>
+                <div class="card-grid">
+        {% endifchanged %}
+
+        <div class="card">
+            <div class="card-header">
+                {% if alocacao.usuario.foto %}
+                    <img class="card-photo" src="{{ alocacao.usuario.foto.url }}" alt="Foto de {{ alocacao.usuario.nome }}">
+                {% else %}
+                    <img class="card-photo" src="{% static 'core/img/default-user.png' %}" alt="Foto padrão">
+                {% endif %}
+                <div class="card-user-info">
+                    <h2>{{ alocacao.usuario.nome }}</h2>
+                    <p>Chave: {{ alocacao.usuario.chave }}</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-dates">
+                    <div>Entrada: <span>{{ alocacao.data_entrada|date:"d/m/Y" }}</span></div>
+                    <div>Saída: <span>{{ alocacao.data_saida|date:"d/m/Y" }}</span></div>
+                </div>
+            </div>
+        </div>
+
+        {% if forloop.last %}
+            </div> </div> {% endif %}
+
+    {% empty %}
+        <div class="empty-dashboard">
+            <h2>Nenhuma alocação encontrada.</h2>
+        </div>
+    {% endfor %}
+
+{% endblock %}
