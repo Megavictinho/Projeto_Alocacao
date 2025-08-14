@@ -49,7 +49,7 @@ def dashboard_geral(request):
     alocacoes = Alocacao.objects.select_related('usuario', 'plataforma').order_by('plataforma__nome', 'data_entrada')
     contexto = {
         'alocacoes': alocacoes,
-        'titulo': 'Dashboard Geral de Alocações'
+        'titulo': 'Dashboard'
     }
     return render(request, 'core/dashboard.html', contexto)
 
@@ -72,7 +72,7 @@ def dashboard_embarque_mes(request):
     ).select_related('usuario', 'plataforma').order_by('data_entrada')
     contexto = {
         'alocacoes': alocacoes,
-        'titulo': f'Dashboard de Embarques do Mês Atual ({hoje.strftime("%B/%Y")})'
+        'titulo': f'Embarque do Mês ({hoje.strftime("%B/%Y")})'
     }
     return render(request, 'core/dashboard.html', contexto)
 
@@ -85,7 +85,7 @@ def dashboard_desembarque_mes(request):
     ).select_related('usuario', 'plataforma').order_by('data_saida')
     contexto = {
         'alocacoes': alocacoes,
-        'titulo': f'Dashboard de Desembarques do Mês Atual ({hoje.strftime("%B/%Y")})'
+        'titulo': f'Desembarque do Mês ({hoje.strftime("%B/%Y")})'
     }
     return render(request, 'core/dashboard.html', contexto)
 
