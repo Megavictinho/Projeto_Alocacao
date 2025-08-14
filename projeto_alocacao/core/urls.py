@@ -9,4 +9,5 @@ urlpatterns = [
     path('plataforma/<int:plataforma_id>/', views.dashboard_por_plataforma, name='dashboard_por_plataforma'),
     path('embarques/', views.dashboard_embarque_mes, name='dashboard_embarque_mes'),
     path('desembarques/', views.dashboard_desembarque_mes, name='dashboard_desembarque_mes'),
+    path('alocacao/<int:alocacao_id>/editar/', views.editar_alocacao, name='editar_alocacao'),
 ]

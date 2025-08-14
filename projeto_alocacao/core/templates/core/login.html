@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <h1>Login</h1>
+    <p>Por favor, utilize suas credenciais para acessar o sistema.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <p style="color: red;">Seu usuário ou senha estão incorretos. Tente novamente.</p>
+        {% endif %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Entrar</button>
+    </form>
+{% endblock %}

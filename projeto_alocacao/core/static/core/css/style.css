@@ -243,3 +243,31 @@ button[type="submit"]:hover {
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
+
+.card-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--borda-cor);
+    text-align: right; 
+}
+
+.btn {
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-edit {
+    background-color: var(--amarelo-petrobras);
+    color: var(--cinza-texto);
+}
+
+.btn-edit:hover {
+    background-color: #fdd100;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}

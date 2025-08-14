@@ -37,6 +37,11 @@
                     <div>Entrada: <span>{{ alocacao.data_entrada|date:"d/m/Y" }}</span></div>
                     <div>Saída: <span>{{ alocacao.data_saida|date:"d/m/Y" }}</span></div>
                 </div>
+
+                <div class="card-actions">
+                    <a href="{% url 'editar_alocacao' alocacao.id %}" class="btn btn-edit">Editar</a>
+                </div>
+                
             </div>
         </div>
 

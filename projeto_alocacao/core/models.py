@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Usuario(models.Model):
     nome = models.CharField(max_length=200)
@@ -27,3 +28,22 @@ class Alocacao(models.Model):
         verbose_name = "Alocação"
         verbose_name_plural = "Alocações"
         ordering = ['data_entrada']
+
+class LogAlocacao(models.Model):
+    ACAO_CHOICES = [
+        ('Criação', 'Criação'),
+        ('Atualização', 'Atualização'),
+        ('Remoção', 'Remoção'),
+    ]
+
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, help_text="Usuário que realizou a ação")
+    acao = models.CharField(max_length=20, choices=ACAO_CHOICES)
+    alocacao = models.ForeignKey(Alocacao, on_delete=models.CASCADE, help_text="Alocação que foi modificada")
+    detalhes = models.TextField(help_text="Detalhes da alocação no momento da ação")
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.acao} por {self.usuario} em {self.timestamp.strftime('%d/%m/%Y %H:%M')}"
+
+    class Meta:
+        ordering = ['-timestamp']
