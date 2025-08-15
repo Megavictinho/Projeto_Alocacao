@@ -25,9 +25,9 @@
             <span style="color: var(--amarelo-petrobras); margin-left: 25px;">
                 Olá, {{ user.username }}
             </span>
-            <form action="{% url 'logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="logout-button">Sair</button>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja sair?');">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Sair</button>
             </form>
         {% else %}
             <a href="{% url 'login' %}">Entrar</a>

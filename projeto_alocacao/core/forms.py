@@ -20,18 +20,10 @@ class PlataformaForm(forms.ModelForm):
 
 
 class AlocacaoForm(forms.ModelForm):
-    usuario = UsuarioChoiceField(
-        queryset=Usuario.objects.order_by('nome'),
-        label="Usuário"
-    )
 
     class Meta:
         model = Alocacao
         fields = ['usuario', 'plataforma', 'data_entrada', 'data_saida']
-        widgets = {
-            'data_entrada': forms.DateInput(attrs={'type': 'date'}),
-            'data_saida': forms.DateInput(attrs={'type': 'date'}),
-        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -40,11 +32,11 @@ class AlocacaoForm(forms.ModelForm):
         data_saida = cleaned_data.get("data_saida")
 
         if not usuario or not data_entrada or not data_saida:
-            return cleaned_data 
+            return cleaned_data
 
         if data_saida < data_entrada:
             self.add_error('data_saida', "A data de saída não pode ser anterior à data de entrada.")
-        
+
         alocacoes_conflitantes = Alocacao.objects.filter(
             usuario=usuario,
             data_entrada__lte=data_saida,
@@ -60,5 +52,5 @@ class AlocacaoForm(forms.ModelForm):
                 f"Conflito de alocação! O usuário já está alocado na plataforma '{conflito.plataforma.nome}' "
                 f"entre {conflito.data_entrada.strftime('%d/%m/%Y')} e {conflito.data_saida.strftime('%d/%m/%Y')}."
             )
-        
+
         return cleaned_data

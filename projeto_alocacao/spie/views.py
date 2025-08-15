@@ -9,18 +9,23 @@ from .forms import *
 
 def get_tipos_equipamento_ajax(request):
     plataforma_id = request.GET.get('plataforma_id')
+    if not plataforma_id:
+        return JsonResponse([], safe=False)
     tipos = TipoEquipamento.objects.filter(plataforma_id=plataforma_id).order_by('nome')
     return JsonResponse(list(tipos.values('id', 'nome')), safe=False)
 
-
 def get_tags_equipamento_ajax(request):
     tipo_id = request.GET.get('tipo_equipamento_id')
+    if not tipo_id:
+        return JsonResponse([], safe=False)
     tags = TagEquipamento.objects.filter(tipo_equipamento_id=tipo_id).order_by('chave')
     return JsonResponse(list(tags.values('id', 'chave')), safe=False)
 
 
 def get_causas_ajax(request):
     defeito_id = request.GET.get('defeito_id')
+    if not defeito_id:
+        return JsonResponse([], safe=False)
     causas = Causa.objects.filter(defeito_id=defeito_id).order_by('nome')
     return JsonResponse(list(causas.values('id', 'nome')), safe=False)
 

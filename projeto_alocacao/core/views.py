@@ -55,7 +55,7 @@ def dashboard_geral(request):
 
 @login_required
 def dashboard_por_plataforma(request, plataforma_id):
-    plataforma = Plataforma.objects.get(id=plataforma_id)
+    plataforma = get_object_or_404(Plataforma, id=plataforma_id)
     alocacoes = Alocacao.objects.filter(plataforma=plataforma).select_related('usuario').order_by('data_entrada')
     contexto = {
         'alocacoes': alocacoes,
