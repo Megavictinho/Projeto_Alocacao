@@ -11,17 +11,10 @@
 
     <header class="header">
     <div class="logo">
-        <a href="{% url 'dashboard_geral' %}">Embarque e Desembarque</a>
+        <a href="{% url 'dashboard_geral' %}">SPIE</a>
     </div>
     <nav>
         {% if user.is_authenticated %}
-            <a href="{% url 'dashboard_geral' %}">Dashboard</a>
-            <a href="{% url 'dashboard_embarque_mes' %}">Embarque</a>
-            <a href="{% url 'dashboard_desembarque_mes' %}">Desembarque</a>
-            <a href="{% url 'cadastrar_usuario' %}">+ Nova Usuario</a>
-            <a href="{% url 'cadastrar_plataforma' %}">+ Nova Plataforma</a>
-            <a href="{% url 'cadastrar_alocacao' %}">+ Nova Alocação</a>
-
             <span style="color: var(--amarelo-petrobras); margin-left: 25px;">
                 Olá, {{ user.username }}
             </span>

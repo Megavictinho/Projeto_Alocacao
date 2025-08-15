@@ -271,3 +271,46 @@ button[type="submit"]:hover {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transform: translateY(-2px);
 }
+
+.hub-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.hub-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px;
+    border: 1px solid var(--borda-cor);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--cinza-texto);
+    background-color: var(--branco);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hub-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    color: var(--verde-escuro);
+}
+
+.hub-card-icon {
+    margin-bottom: 20px;
+    color: var(--verde-petrobras);
+}
+
+.hub-card h2 {
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: var(--verde-petrobras);
+}
+
+.hub-card p {
+    font-size: 1em;
+    line-height: 1.5;
+}

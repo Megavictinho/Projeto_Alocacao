@@ -1,0 +1,58 @@
+{% extends 'spie/base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<h1>{{ titulo }}</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar Inspeção</button>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const plataformaSelect = document.getElementById('id_plataforma');
+    const tipoEquipamentoSelect = document.getElementById('id_tipo_equipamento');
+    const tagEquipamentoSelect = document.getElementById('id_tag_equipamento');
+    const defeitoSelect = document.getElementById('id_defeito');
+    const causaSelect = document.getElementById('id_causa');
+    plataformaSelect.addEventListener('change', function() {
+        const plataformaId = this.value;
+        tipoEquipamentoSelect.innerHTML = '<option value="">Carregando...</option>';
+        tagEquipamentoSelect.innerHTML = '<option value="">Aguardando tipo...</option>';
+
+        fetch(`{% url 'spie:ajax_get_tipos_equipamento' %}?plataforma_id=${plataformaId}`)
+            .then(response => response.json())
+            .then(data => {
+                tipoEquipamentoSelect.innerHTML = '<option value="">---------</option>';
+                data.forEach(tipo => tipoEquipamentoSelect.add(new Option(tipo.nome, tipo.id)));
+            });
+    });
+
+    tipoEquipamentoSelect.addEventListener('change', function() {
+        const tipoId = this.value;
+        tagEquipamentoSelect.innerHTML = '<option value="">Carregando...</option>';
+
+        fetch(`{% url 'spie:ajax_get_tags_equipamento' %}?tipo_equipamento_id=${tipoId}`)
+            .then(response => response.json())
+            .then(data => {
+                tagEquipamentoSelect.innerHTML = '<option value="">---------</option>';
+                data.forEach(tag => tagEquipamentoSelect.add(new Option(tag.chave, tag.id)));
+            });
+    });
+
+    defeitoSelect.addEventListener('change', function() {
+        const defeitoId = this.value;
+        causaSelect.innerHTML = '<option value="">Carregando...</option>';
+
+        fetch(`{% url 'spie:ajax_get_causas' %}?defeito_id=${defeitoId}`)
+            .then(response => response.json())
+            .then(data => {
+                causaSelect.innerHTML = '<option value="">---------</option>';
+                data.forEach(causa => causaSelect.add(new Option(causa.nome, causa.id)));
+            });
+    });
+});
+</script>
+{% endblock %}

@@ -108,3 +108,7 @@ def editar_alocacao(request, alocacao_id):
         form = AlocacaoForm(instance=alocacao)
 
     return render(request, 'core/form_generico.html', {'form': form, 'titulo': f'Editar Alocação de {alocacao.usuario.nome}'})
+
+
+def hub_selecao_apps(request):
+    return render(request, 'hub/hub.html')

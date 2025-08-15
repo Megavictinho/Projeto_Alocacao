@@ -1,0 +1,16 @@
+{% extends 'spie/base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>{{ titulo }}</h1>
+    <a href="{{ url_adicionar }}" class="btn btn-edit" style="text-decoration: none;">Adicionar Novo</a>
+</div>
+<hr>
+<ul>
+    {% for item in itens %}
+        <li>{{ item.nome }}</li>
+    {% empty %}
+        <li>Nenhum item cadastrado.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
