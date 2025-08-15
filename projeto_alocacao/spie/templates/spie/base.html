@@ -10,28 +10,44 @@
 <body>
 
     <header class="header">
-    <div class="logo">
-        <a href="{% url 'dashboard_geral' %}">SPIE</a>
-    </div>
-    <nav>
-        {% if user.is_authenticated %}
-            <span style="color: var(--amarelo-petrobras); margin-left: 25px;">
-                Olá, {{ user.username }}
-            </span>
-            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+        <div class="logo">
+            <a href="{% url 'hub' %}">SPIE</a> </div>
+        <nav>
+    {% if user.is_authenticated %}
+        <a href="{% url 'hub' %}">Início</a>
+
+        <div class="nav-dropdown">
+            <button class="nav-dropbtn">Cadastros SPIE</button>
+            <div class="nav-dropdown-content">
+                <a href="{% url 'spie:modulo_list' %}">Módulos</a>
+                <a href="{% url 'spie:setor_list' %}">Setores</a>
+                <a href="{% url 'spie:tipo_equipamento_list' %}">Tipos de Equipamento</a>
+                <a href="{% url 'spie:tag_equipamento_list' %}">TAGs de Equipamento</a>
+                <a href="#">Defeitos</a>
+                <a href="{% url 'spie:causa_list' %}">Causas</a>
+                </div>
+        </div>
+        
+        <span style="color: var(--amarelo-petrobras); margin-left: auto;">
+            Olá, {{ user.username }}
+        </span>
+        <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
             <button type="submit" class="logout-button">Sair</button>
-            </form>
-        {% else %}
-            <a href="{% url 'login' %}">Entrar</a>
-        {% endif %}
-    </nav>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">Entrar</a>
+    {% endif %}
+</nav>
     </header>
 
     <main class="container">
         {% block content %}
         {% endblock %}
     </main>
+    
+    {% block extra_js %}
+    {% endblock %}
 
 </body>
 </html>

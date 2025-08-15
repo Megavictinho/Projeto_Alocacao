@@ -6,7 +6,7 @@ from . import views
 app_name = 'spie'
 
 urlpatterns = [
-    path('', views.SpieDashboardView.as_view(), name='dashboard'),
+    path('', views.InspecaoListView.as_view(), name='dashboard'),
     path('cadastros/modulo/', views.ModuloListView.as_view(), name='modulo_list'),
     path('cadastros/modulo/novo/', views.ModuloCreateView.as_view(), name='modulo_add'),
     path('cadastros/setor/', views.SetorListView.as_view(), name='setor_list'),

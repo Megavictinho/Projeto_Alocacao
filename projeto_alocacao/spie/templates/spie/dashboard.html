@@ -1,11 +1,38 @@
 {% extends 'spie/base.html' %}
+
 {% block title %}{{ titulo }}{% endblock %}
+
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center;">
     <h1>{{ titulo }}</h1>
     <a href="{% url 'spie:inspecao_add' %}" class="btn btn-edit" style="text-decoration: none;">Criar Nova Inspeção</a>
 </div>
 <hr>
-<h2>Gerenciamento de Cadastros</h2>
-<p>Selecione uma opção de cadastro para gerenciar:</p>
+
+<div class="card-grid">
+    {% for inspecao in inspecoes %}
+        <div class="card">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <h3 class="card-platform" style="margin-top:0;">ZR: {{ inspecao.nota_zr }}</h3>
+                    <span style="background-color: #eee; padding: 5px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold;">
+                        {{ inspecao.categoria_rti.nome }}
+                    </span>
+                </div>
+                <p><strong>Plataforma:</strong> {{ inspecao.plataforma.nome }}</p>
+                <p><strong>Inspetor:</strong> {{ inspecao.usuario.get_full_name|default:inspecao.usuario.username }}</p>
+                <p><strong>Data:</strong> {{ inspecao.data_criacao|date:"d/m/Y H:i" }}</p>
+
+                <div class="card-actions">
+                    <a href="#" class="btn btn-edit">Ver Detalhes</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty-dashboard">
+            <h2>Nenhuma inspeção cadastrada.</h2>
+            <p>Clique em "Criar Nova Inspeção" para adicionar a primeira.</p>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}

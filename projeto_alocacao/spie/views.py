@@ -25,13 +25,20 @@ def get_causas_ajax(request):
     return JsonResponse(list(causas.values('id', 'nome')), safe=False)
 
 
-class SpieDashboardView(LoginRequiredMixin, ListView):
-    model = Modulo
+class InspecaoListView(LoginRequiredMixin, ListView):
+    model = Inspecao
     template_name = 'spie/dashboard.html'
+    context_object_name = 'inspecoes'
+    paginate_by = 12
+
+    def get_queryset(self):
+        return Inspecao.objects.select_related(
+            'usuario', 'plataforma', 'categoria_rti'
+        ).all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = "Dashboard de Inspeção (SPIE)"
+        context['titulo'] = "Dashboard de Inspeções"
         return context
 
 
