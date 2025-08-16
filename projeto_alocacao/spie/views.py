@@ -220,11 +220,6 @@ class InspecaoCreateView(LoginRequiredMixin, CreateView):
     template_name = 'spie/inspecao_form.html'
     success_url = reverse_lazy('spie:dashboard')
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['objetos'].queryset = Objeto.objects.none()
-        return form
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = "Criar Nova Inspeção"
