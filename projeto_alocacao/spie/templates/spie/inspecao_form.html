@@ -2,56 +2,116 @@
 {% block title %}{{ titulo }}{% endblock %}
 {% block content %}
 <h1>{{ titulo }}</h1>
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" id="inspecao_form">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    {# Itera pelos campos para renderizar o formulário e adicionar o botão '+' #}
+    {% for field in form %}
+        <p>
+            {{ field.label_tag }}
+            {{ field }}
+            
+            {% if field.name == 'objetos' %}
+                <a href="{% url 'spie:objeto_add_popup' %}" 
+                   class="add-related-widget-link" 
+                   id="add_id_{{ field.name }}" 
+                   title="Adicionar outro Objeto"
+                   style="margin-left: 8px; text-decoration: none; font-weight: bold; font-size: 1.5em;">
+                   +
+                </a>
+            {% endif %}
+            
+            {% if field.help_text %}
+                <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+            {% endfor %}
+        </p>
+    {% endfor %}
+
     <button type="submit">Salvar Inspeção</button>
 </form>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+function showAddAnotherPopup(triggeringLink) {
+    var name = triggeringLink.id.replace(/^add_id_/, '');
+    var href = triggeringLink.href;
+    var win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
+    win.focus();
+    return false;
+}
+
+
+function dismissAddRelatedObjectPopup(win, newId, newRepr) {
+    var name = win.name;
+    var elem = document.getElementById('id_' + name);
+    if (elem) {
+        // Cria uma nova opção, já marcada como selecionada
+        var option = new Option(newRepr, newId, true, true);
+        elem.options[elem.options.length] = option;
+    }
+    win.close();
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const plataformaSelect = document.getElementById('id_plataforma');
     const tipoEquipamentoSelect = document.getElementById('id_tipo_equipamento');
     const tagEquipamentoSelect = document.getElementById('id_tag_equipamento');
     const defeitoSelect = document.getElementById('id_defeito');
     const causaSelect = document.getElementById('id_causa');
-    plataformaSelect.addEventListener('change', function() {
-        const plataformaId = this.value;
-        tipoEquipamentoSelect.innerHTML = '<option value="">Carregando...</option>';
-        tagEquipamentoSelect.innerHTML = '<option value="">Aguardando tipo...</option>';
 
-        fetch(`{% url 'spie:ajax_get_tipos_equipamento' %}?plataforma_id=${plataformaId}`)
-            .then(response => response.json())
-            .then(data => {
-                tipoEquipamentoSelect.innerHTML = '<option value="">---------</option>';
-                data.forEach(tipo => tipoEquipamentoSelect.add(new Option(tipo.nome, tipo.id)));
-            });
-    });
+    if (plataformaSelect) {
+        plataformaSelect.addEventListener('change', function() {
+            const plataformaId = this.value;
+            tipoEquipamentoSelect.innerHTML = '<option value="">Carregando...</option>';
+            tagEquipamentoSelect.innerHTML = '<option value="">Aguardando tipo...</option>';
 
-    tipoEquipamentoSelect.addEventListener('change', function() {
-        const tipoId = this.value;
-        tagEquipamentoSelect.innerHTML = '<option value="">Carregando...</option>';
+            fetch(`{% url 'spie:ajax_get_tipos_equipamento' %}?plataforma_id=${plataformaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    tipoEquipamentoSelect.innerHTML = '<option value="">---------</option>';
+                    data.forEach(tipo => tipoEquipamentoSelect.add(new Option(tipo.nome, tipo.id)));
+                });
+        });
+    }
 
-        fetch(`{% url 'spie:ajax_get_tags_equipamento' %}?tipo_equipamento_id=${tipoId}`)
-            .then(response => response.json())
-            .then(data => {
-                tagEquipamentoSelect.innerHTML = '<option value="">---------</option>';
-                data.forEach(tag => tagEquipamentoSelect.add(new Option(tag.chave, tag.id)));
-            });
-    });
+    if (tipoEquipamentoSelect) {
+        tipoEquipamentoSelect.addEventListener('change', function() {
+            const tipoId = this.value;
+            tagEquipamentoSelect.innerHTML = '<option value="">Carregando...</option>';
 
-    defeitoSelect.addEventListener('change', function() {
-        const defeitoId = this.value;
-        causaSelect.innerHTML = '<option value="">Carregando...</option>';
+            fetch(`{% url 'spie:ajax_get_tags_equipamento' %}?tipo_equipamento_id=${tipoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    tagEquipamentoSelect.innerHTML = '<option value="">---------</option>';
+                    data.forEach(tag => tagEquipamentoSelect.add(new Option(tag.chave, tag.id)));
+                });
+        });
+    }
 
-        fetch(`{% url 'spie:ajax_get_causas' %}?defeito_id=${defeitoId}`)
-            .then(response => response.json())
-            .then(data => {
-                causaSelect.innerHTML = '<option value="">---------</option>';
-                data.forEach(causa => causaSelect.add(new Option(causa.nome, causa.id)));
-            });
+    if (defeitoSelect) {
+        defeitoSelect.addEventListener('change', function() {
+            const defeitoId = this.value;
+            causaSelect.innerHTML = '<option value="">Carregando...</option>';
+
+            fetch(`{% url 'spie:ajax_get_causas' %}?defeito_id=${defeitoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    causaSelect.innerHTML = '<option value="">---------</option>';
+                    data.forEach(causa => causaSelect.add(new Option(causa.nome, causa.id)));
+                });
+        });
+    }
+
+    document.body.addEventListener('click', function(e) {
+        if (e.target.matches('.add-related-widget-link')) {
+            e.preventDefault();
+            showAddAnotherPopup(e.target);
+        }
     });
 });
 </script>

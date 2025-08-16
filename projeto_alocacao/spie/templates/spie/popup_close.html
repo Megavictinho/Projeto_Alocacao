@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fechando...</title>
+</head>
+<body>
+<script>
+    var newObject = {
+        pk: "{{ objeto_pk }}",
+        repr: "{{ objeto_repr|escapejs }}"
+    };
+    opener.dismissAddRelatedObjectPopup(window, newObject.pk, newObject.repr);
+</script>
+</body>
+</html>

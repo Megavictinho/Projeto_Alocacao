@@ -1,8 +1,8 @@
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
 from .models import *
 from .forms import *
 
@@ -13,6 +13,7 @@ def get_tipos_equipamento_ajax(request):
         return JsonResponse([], safe=False)
     tipos = TipoEquipamento.objects.filter(plataforma_id=plataforma_id).order_by('nome')
     return JsonResponse(list(tipos.values('id', 'nome')), safe=False)
+
 
 def get_tags_equipamento_ajax(request):
     tipo_id = request.GET.get('tipo_equipamento_id')
@@ -167,11 +168,62 @@ class CausaCreateView(LoginRequiredMixin, CreateView):
         return context
     
 
+class DefeitoListView(LoginRequiredMixin, ListView):
+    model = Defeito
+    template_name = 'spie/cadastro_list_generic.html'
+    context_object_name = 'itens'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = "Defeitos"
+        context['url_adicionar'] = reverse_lazy('spie:defeito_add')
+        return context
+
+
+class DefeitoCreateView(LoginRequiredMixin, CreateView):
+    model = Defeito
+    form_class = DefeitoForm
+    template_name = 'spie/cadastro_form_generic.html'
+    success_url = reverse_lazy('spie:defeito_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = "Adicionar Novo Defeito"
+        return context
+
+
+def objeto_create_popup(request):
+    if request.method == 'POST':
+        form = ObjetoForm(request.POST)
+        formset = ImagemObjetoFormset(request.POST, request.FILES)
+        if form.is_valid() and formset.is_valid():
+            objeto = form.save()
+            formset.instance = objeto
+            formset.save()
+            context = {'objeto_pk': objeto.pk, 'objeto_repr': str(objeto)}
+            return render(request, 'spie/popup_close.html', context)
+    else:
+        form = ObjetoForm()
+        formset = ImagemObjetoFormset()
+
+    context = {
+        'titulo': "Adicionar Novo Objeto",
+        'form': form,
+        'formset': formset
+    }
+    return render(request, 'spie/objeto_form_popup.html', context)
+
+
 class InspecaoCreateView(LoginRequiredMixin, CreateView):
     model = Inspecao
     form_class = InspecaoForm
     template_name = 'spie/inspecao_form.html'
     success_url = reverse_lazy('spie:dashboard')
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['objetos'].queryset = Objeto.objects.none()
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -180,5 +232,4 @@ class InspecaoCreateView(LoginRequiredMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.usuario = self.request.user
-        
-    
+        return super().form_valid(form)

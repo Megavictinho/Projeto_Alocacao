@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <style>
+        body { background-color: #f4f7fa; padding: 20px; }
+        .container { max-width: 600px; }
+        fieldset { border: 1px solid #ddd; padding: 15px; margin-top: 20px; border-radius: 4px; }
+        legend { font-weight: bold; color: var(--verde-escuro); }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>{{ titulo }}</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+
+            <fieldset>
+                <legend>Imagens</legend>
+                {{ formset.management_form }}
+                {% for image_form in formset %}
+                    {{ image_form.as_p }}
+                {% endfor %}
+            </fieldset>
+            
+            <br>
+            <button type="submit">Salvar Objeto</button>
+        </form>
+    </main>
+</body>
+</html>

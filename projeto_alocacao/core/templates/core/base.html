@@ -11,7 +11,7 @@
 
     <header class="header">
     <div class="logo">
-        <a href="{% url 'dashboard_geral' %}">Embarque e Desembarque</a>
+        <a href="{% url 'hub' %}">Embarque e Desembarque</a>
     </div>
     <nav>
         {% if user.is_authenticated %}
@@ -27,7 +27,7 @@
             </span>
             <form action="{% url 'logout' %}" method="post" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja sair?');">
                 {% csrf_token %}
-                <button type="submit" class="logout-button">Sair</button>
+                <button type="submit" class="logout-button btn btn-edit">Sair</button>
             </form>
         {% else %}
             <a href="{% url 'login' %}">Entrar</a>
