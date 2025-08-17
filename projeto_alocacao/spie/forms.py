@@ -104,39 +104,33 @@ class InspecaoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['tipo_equipamento'].queryset = TipoEquipamento.objects.none()
-        self.fields['tag_equipamento'].queryset = TagEquipamento.objects.none()
-        self.fields['causa'].queryset = Causa.objects.none()
-        self.fields['objetos'].queryset = Objeto.objects.none()
-
-        if self.is_bound or self.instance.pk:
-            if self.is_bound:
-                data = self.data
-                instance_plataforma = data.get('plataforma')
-                instance_tipo_equipamento = data.get('tipo_equipamento')
-                instance_defeito = data.get('defeito')
-            else:
-                instance_plataforma = self.instance.plataforma.pk
-                instance_tipo_equipamento = self.instance.tipo_equipamento.pk
-                instance_defeito = self.instance.defeito.pk
-
+        if self.instance and self.instance.pk:
+            self.fields['tipo_equipamento'].queryset = self.instance.plataforma.tipos_equipamento.all().order_by('nome')
+            self.fields['tag_equipamento'].queryset = self.instance.tipo_equipamento.tags.all().order_by('chave')
+            self.fields['causa'].queryset = self.instance.defeito.causas.all().order_by('nome')
+            self.fields['objetos'].queryset = Objeto.objects.all()
+        else:
+            self.fields['tipo_equipamento'].queryset = TipoEquipamento.objects.none()
+            self.fields['tag_equipamento'].queryset = TagEquipamento.objects.none()
+            self.fields['causa'].queryset = Causa.objects.none()
+            self.fields['objetos'].queryset = Objeto.objects.none()
+        if self.is_bound:
             try:
-                plataforma_id = int(instance_plataforma)
+                plataforma_id = int(self.data.get('plataforma'))
                 self.fields['tipo_equipamento'].queryset = TipoEquipamento.objects.filter(plataforma_id=plataforma_id).order_by('nome')
             except (ValueError, TypeError):
-                pass 
+                pass
 
             try:
-                tipo_equipamento_id = int(instance_tipo_equipamento)
+                tipo_equipamento_id = int(self.data.get('tipo_equipamento'))
                 self.fields['tag_equipamento'].queryset = TagEquipamento.objects.filter(tipo_equipamento_id=tipo_equipamento_id).order_by('chave')
             except (ValueError, TypeError):
                 pass
 
             try:
-                defeito_id = int(instance_defeito)
+                defeito_id = int(self.data.get('defeito'))
                 self.fields['causa'].queryset = Causa.objects.filter(defeito_id=defeito_id).order_by('nome')
             except (ValueError, TypeError):
                 pass
             
-            if self.instance.pk:
-                self.fields['objetos'].queryset = Objeto.objects.all()
+            self.fields['objetos'].queryset = Objeto.objects.all()

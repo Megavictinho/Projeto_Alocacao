@@ -21,6 +21,7 @@ urlpatterns = [
     path('cadastros/defeito/', views.DefeitoListView.as_view(), name='defeito_list'),
     path('cadastros/defeito/novo/', views.DefeitoCreateView.as_view(), name='defeito_add'),
     path('objeto/novo/popup/', views.objeto_create_popup, name='objeto_add_popup'),
+    path('inspecao/<int:pk>/', views.InspecaoDetailView.as_view(), name='inspecao_detail'),
     path('ajax/tipos-equipamento/', views.get_tipos_equipamento_ajax, name='ajax_get_tipos_equipamento'),
     path('ajax/tags-equipamento/', views.get_tags_equipamento_ajax, name='ajax_get_tags_equipamento'),
     path('ajax/causas/', views.get_causas_ajax, name='ajax_get_causas'),

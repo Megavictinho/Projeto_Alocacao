@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import *
 from .forms import *
@@ -189,6 +189,24 @@ class DefeitoCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = "Adicionar Novo Defeito"
+        return context
+
+
+class InspecaoDetailView(LoginRequiredMixin, DetailView):
+    model = Inspecao
+    template_name = 'spie/inspecao_detail.html'
+    context_object_name = 'inspecao'
+
+    def get_queryset(self):
+        # Otimiza a consulta para buscar objetos relacionados de uma só vez
+        return Inspecao.objects.select_related(
+            'usuario', 'plataforma', 'modulo', 'setor', 'tipo_equipamento',
+            'tag_equipamento', 'defeito', 'causa', 'categoria_rti', 'recomendacao'
+        ).prefetch_related('objetos__imagens')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = f"Detalhes da Inspeção ZR {self.object.nota_zr}"
         return context
 
 

@@ -1,0 +1,65 @@
+{% extends 'spie/base.html' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<h1>{{ titulo }}</h1>
+
+<div class.card>
+    <div class="card-body">
+        <h3>Dados Gerais</h3>
+        <p><strong>Nota ZR:</strong> {{ inspecao.nota_zr }}</p>
+        <p><strong>Inspetor:</strong> {{ inspecao.usuario.get_full_name|default:inspecao.usuario.username }}</p>
+        <p><strong>Data:</strong> {{ inspecao.data_criacao|date:"d/m/Y H:i" }}</p>
+        <hr>
+
+        <h3>Localização</h3>
+        <p><strong>Plataforma:</strong> {{ inspecao.plataforma.nome }}</p>
+        <p><strong>Módulo:</strong> {{ inspecao.modulo.nome }}</p>
+        <p><strong>Setor:</strong> {{ inspecao.setor.nome }}</p>
+        <p><strong>Localização Específica:</strong> {{ inspecao.localizacao }}</p>
+        <hr>
+
+        <h3>Equipamento</h3>
+        <p><strong>Tipo de Equipamento:</strong> {{ inspecao.tipo_equipamento }}</p>
+        <p><strong>TAG do Equipamento:</strong> {{ inspecao.tag_equipamento.chave }}</p>
+        <hr>
+        
+        <h3>Análise</h3>
+        <p><strong>Defeito:</strong> {{ inspecao.defeito.nome }}</p>
+        <p><strong>Causa:</strong> {{ inspecao.causa }}</p>
+        <p><strong>Categoria RTI:</strong> {{ inspecao.categoria_rti.nome }}</p>
+        <p><strong>Recomendação:</strong> {{ inspecao.recomendacao.nome }}</p>
+        <hr>
+
+        <h3>Objetos Associados</h3>
+        {% for objeto in inspecao.objetos.all %}
+            <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                <h4>{{ objeto }}</h4>
+                <p><strong>Acesso:</strong> {{ objeto.acesso.nome }}</p>
+                <p><strong>Revestimento:</strong> {{ objeto.revestimento.nome }}</p>
+                <p><strong>Dano:</strong> {{ objeto.dano.nome }} ({{ objeto.ex_dano }}%)</p>
+                {% if objeto.complemento %}
+                    <p><strong>Complemento:</strong> {{ objeto.complemento|linebreaks }}</p>
+                {% endif %}
+
+                <h5>Imagens do Objeto:</h5>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    {% for imagem in objeto.imagens.all %}
+                        <a href="{{ imagem.imagem.url }}" target="_blank">
+                            <img src="{{ imagem.imagem.url }}" alt="Imagem do objeto" style="max-height: 150px; border: 1px solid #ddd; border-radius: 4px;">
+                        </a>
+                    {% empty %}
+                        <p>Nenhuma imagem cadastrada para este objeto.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <p>Nenhum objeto associado a esta inspeção.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<a href="{% url 'spie:dashboard' %}" class="btn btn-edit" style="margin-top: 20px;">Voltar ao Dashboard</a>
+
+{% endblock %}

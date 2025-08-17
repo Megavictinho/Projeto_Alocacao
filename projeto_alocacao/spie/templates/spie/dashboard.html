@@ -15,16 +15,30 @@
             <div class="card-body">
                 <div style="display: flex; justify-content: space-between; align-items: start;">
                     <h3 class="card-platform" style="margin-top:0;">ZR: {{ inspecao.nota_zr }}</h3>
-                    <span style="background-color: #eee; padding: 5px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold;">
-                        {{ inspecao.categoria_rti.nome }}
-                    </span>
+                    {% if inspecao.categoria_rti.nome == 'A' %}
+                        <span style="background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold;">
+                            {{ inspecao.categoria_rti.nome }}
+                        </span>
+                    {% elif inspecao.categoria_rti.nome == 'B' %}
+                        <span style="background-color: #43dc35; color: white; padding: 5px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold;">
+                            {{ inspecao.categoria_rti.nome }}
+                        </span>
+                    {% elif inspecao.categoria_rti.nome == 'C' %}
+                        <span style="background-color: #070bf8; color: white; padding: 5px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold;">
+                            {{ inspecao.categoria_rti.nome }}
+                        </span>
+                    {% else %}
+                        <span style="background-color: #eee; padding: 5px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold;">
+                            {{ inspecao.categoria_rti.nome }}
+                        </span>
+                    {% endif %}
                 </div>
                 <p><strong>Plataforma:</strong> {{ inspecao.plataforma.nome }}</p>
                 <p><strong>Inspetor:</strong> {{ inspecao.usuario.get_full_name|default:inspecao.usuario.username }}</p>
                 <p><strong>Data:</strong> {{ inspecao.data_criacao|date:"d/m/Y H:i" }}</p>
 
                 <div class="card-actions">
-                    <a href="#" class="btn btn-edit">Ver Detalhes</a>
+                    <a href="{% url 'spie:inspecao_detail' inspecao.pk %}" class="btn btn-edit">Ver Detalhes</a>
                 </div>
             </div>
         </div>
